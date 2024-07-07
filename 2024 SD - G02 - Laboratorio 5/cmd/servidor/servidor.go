@@ -6,39 +6,27 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"strings"
 
 	"google.golang.org/grpc"
 )
 
 var (
-	puerto     string
-	nodos      string
-	lider      string
-	seguidores string
+	puerto string
+	nodos  []string
 )
 
 func main() {
-	// Manejar argumentos para especificar el puerto
 	flag.StringVar(&puerto, "p", "12345", "puerto en el cual escuchar")
-	flag.StringVar(&nodos, "nodos", "", "lista de nodos separados por coma")
-	flag.StringVar(&lider, "lider", "", "nodo líder")
-	flag.StringVar(&seguidores, "seguidores", "", "lista de seguidores separados por coma")
 	flag.Parse()
 
-	if puerto == "" || nodos == "" || lider == "" || seguidores == "" {
-		log.Fatal("El puerto, nodos, líder y seguidores son obligatorios")
+	if puerto == "" {
+		log.Fatal("El puerto es obligatorio")
 	}
 
-	listaNodos := strings.Split(nodos, ",")
-	listaSeguidores := strings.Split(seguidores, ",")
-
-	log.Printf("Nodos configurados: %v", listaNodos)
-	log.Printf("Nodo líder: %s", lider)
-	log.Printf("Seguidores configurados: %v", listaSeguidores)
+	nodos = []string{"localhost:12346", "localhost:12347"} // direcciones de nodos seguidores
 
 	servidorReal := grpc.NewServer()
-	servidor := db.NuevoServidor(listaNodos, lider, listaSeguidores)
+	servidor := db.NuevoServidor(nodos)
 	db.RegisterBaseServer(servidorReal, &servidor)
 
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%s", puerto))
