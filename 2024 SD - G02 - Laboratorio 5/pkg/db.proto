@@ -1,0 +1,58 @@
+syntax = "proto3"; 
+
+package db;
+
+option go_package = "db/pkg"; 
+
+// TODO: completar
+message ParametroPut {
+    string clave = 1;
+    bytes valor = 2;
+}
+
+// TODO: completar
+message ParametroGet {
+    string clave = 1;
+}
+
+// TODO: completar
+message ParametroGetAll {
+}
+
+// TODO: completar
+message ResultadoPut {
+}
+
+// TODO: completar
+message ResultadoGet {
+    bytes valor = 1;
+}
+
+// TODO: completar
+message ResultadoGetAll {
+    repeated ClaveValor claveValor = 1;
+}
+
+// Resultado para la operación GetAll
+message ClaveValor {
+    string clave = 1;
+    bytes valor = 2;
+}
+
+service base {
+    rpc put (ParametroPut) returns (ResultadoPut);
+    rpc get (ParametroGet) returns (ResultadoGet);
+    rpc getAll (ParametroGetAll) returns (ResultadoGetAll);
+    rpc replicate (ReplicaPut) returns (ReplicaResponse); // Nuevo método para replicación
+}
+
+//
+
+// Mensaje para la replicación
+message ReplicaPut {
+    string clave = 1;
+    bytes valor = 2;
+    string lider = 3;
+}
+
+message ReplicaResponse {}
